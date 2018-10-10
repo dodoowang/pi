@@ -78,6 +78,21 @@ def gauss():
         n += 1
 
 
+def ramanujan():
+    def deltan(n):
+        a = factorial(4 * n) * (1103 + 26390 * n)
+        b = pow(factorial(n), Decimal(4))
+        c = 396 ** (4 * n)
+        return Decimal(a) / Decimal(b) / Decimal(c)
+
+    n = 0
+    result = 0
+    while True:
+        result += deltan(n)
+        yield Decimal(9801) / Decimal(8).sqrt() * (Decimal(1) / result)
+        n += 1
+
+
 def salamin():
     a = Decimal(1)
     b = Decimal(1) / Decimal(2).sqrt()
@@ -92,6 +107,29 @@ def salamin():
         yield Decimal(8).sqrt() * pow(a, Decimal(3)) / u
 
 
+def borwein1984():
+    a = Decimal(2).sqrt()
+    b = Decimal(0)
+    p = Decimal(2) + Decimal(2).sqrt()
+    while True:
+        a, b = a.sqrt() / Decimal(2) + Decimal(1/2) / a.sqrt(), \
+                a.sqrt() * (Decimal(1) + b) / (a + b)
+        p = p * b * (Decimal(1) + a) / (Decimal(1) + b)
+        yield p
+
+
+def borwein1987():
+    y = Decimal(2).sqrt()
+    y = (Decimal(1) + y) / Decimal(2) / y.sqrt()
+    z = pow(Decimal(2), Decimal(1/4))
+    f = Decimal(2) + Decimal(2).sqrt()
+    while True:
+        f = f * (Decimal(1) + y) / (Decimal(1) + z)
+        yield f
+        y, z = (Decimal(1) + y) / Decimal(2) / y.sqrt(), \
+            (Decimal(1) + y * z) / (Decimal(1) + z) / y.sqrt()
+
+
 def pi_calc(f, prec=100, verb=True):
     '''
     calculate pi value to given precision level with different algorthims
@@ -102,9 +140,16 @@ def pi_calc(f, prec=100, verb=True):
         - plouffe
         - machin
         - gauss: very fast
-        - salamin: fastest
+        - ramanujan: like magic
+        - salamin: extreamly fast
+        - borwein1984: similar to salamin
+        - veorwein1987: similar to salamin
     prec: the precision level required. default setting is 100 digits
     verb: if verbose is True, then the process will be printed. default is True
+
+    examples:
+        python pi.py gauss 150
+        python pi.py salamin 1000 --verb 0
 
 
     remark: please refer to http://www.pi314.net/eng/accueilformules.php for
