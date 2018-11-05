@@ -20,13 +20,16 @@ if __name__ == "__main__":
         x = random.uniform(-1., 1.)
         y = random.uniform(-1., 1.)
         n += 1
-        if x * x + y * y < 1.0:
+        if x * x + y * y < 2. / 3:
+            # set the radius to 2/3, which can make the probability of random
+            # points locate in circle very close to 0.5
+            # I think this can accellarate the convergence, not proved yet
             m += 1
             sc.set_at(to_screen_pos(x, y, 800), (255, 0, 0))
         else:
             sc.set_at(to_screen_pos(x, y, 800), (0, 0, 255))
         if n % 1000 == 0:
-            hint = "{:10d}k rounds, pi ~ {:1.10f}".format(n//1000, 4 * m/n)
+            hint = "{:10d}k rounds, pi ~ {:1.10f}".format(n//1000, 6 * m/n)
             text = font.render(hint, True, (255, 255, 255))
             pygame.draw.rect(sc, (55, 55, 55), text.get_rect())
             sc.blit(text, (0, 0))
